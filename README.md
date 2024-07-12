@@ -7,7 +7,6 @@ Transfer Wi-Fi credentials over BLE and connect to Wi-Fi using ESP32 Devkit V1 <
 * [Tools Used](#Tools-Used)
 * [Microcontroller Interfacing](#Microcontroller-Interfacing)
 * [Firmware](#Firmware)
-* [Project Overview Video](#Project-Overview-Video)
 * [Issues Faced and Resolution](#Issues-Faced-and-Resolution)
 * [Outputs](#Outputs)
 * [nRF Connect Application interface](#nRF-Connect-Application-interface)
