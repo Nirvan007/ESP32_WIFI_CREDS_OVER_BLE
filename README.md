@@ -1,4 +1,4 @@
-Low Energy Bluetooth Service Broadcasting using ESP32 Devkit V1 <a name="TOP"></a>
+Transfer Wi-Fi credentials over BLE and connect to Wi-Fi using ESP32 Devkit V1 <a name="TOP"></a>
 ===================
 
 ## Table of Contents
@@ -6,8 +6,6 @@ Low Energy Bluetooth Service Broadcasting using ESP32 Devkit V1 <a name="TOP"></
 * [Hardware Components Used](#Hardware-Components-Used)
 * [Tools Used](#Tools-Used)
 * [Microcontroller Interfacing](#Microcontroller-Interfacing)
-* [Schematic](#Schematic)
-* [Complete Hardware Assembly](#Complete-Hardware-Assembly)
 * [Firmware](#Firmware)
 * [Project Overview Video](#Project-Overview-Video)
 * [Issues Faced and Resolution](#Issues-Faced-and-Resolution)
@@ -16,107 +14,74 @@ Low Energy Bluetooth Service Broadcasting using ESP32 Devkit V1 <a name="TOP"></
 * [References](#References)
 
 ## Task Details
-### Services to be broadcasted:
-* Temperature Measurement
-* Humidity
-
-### Details about the service to broadcast over Bluetooth
-* Service UUID: 00000002-0000-0000-FDFD-FDFDFDFDFDFD.
-* Characteristics:
-  * Temperature Measurement: Standard BLE characteristic - GATT Char UUID: 0x2A1C.
-  * Humidity: Standard BLE characteristic - GATT Char UUID: 0x2A6F.
-* Supported operations: Both characteristics support read and notify.
+Transfer Wi-Fi credentials over Bluetooth and connect to Wifi. (Use a Smartphone to send Wi-Fi credentials)
 
 ## Hardware Components Used
 1. Espressif System's ESP32 Devkit V1 development board
-2. DHT11 Temperature and Humidity sensor
-3. 10K Ohm Resistor (Pull-up)
-4. USB to MicroUSB cable
-5. Breadboard
-6. Jumpers
+2. USB to MicroUSB cable
+3. Breadboard
 
 ## Tools Used
 ### Arduino IDE 
 Arduino Integrated Development Environment or Arduino Software (IDE) contains a text editor for writing code, a message area, a text console, a toolbar with buttons for common functions and a series of menus. It connects to the Arduino hardware to upload programs and communicate with them. 
 * For more details refer: <https://www.arduino.cc/en/software>
 
-### Fritzing
-Fritzing is an open-source hardware initiative that makes electronics accessible as creative material for anyone. We offer a software tool, a community website and services in the spirit of Processing and Arduino, fostering a creative ecosystem that allows users to document their prototypes, share them with others, teach electronics in a classroom, and layout and manufacture professional PCBs. 
-* For more details refer: <https://fritzing.org/>
-
 ## Microcontroller Interfacing
-* Used OneWire protocol to interface the microcontroller to the DHT11 sensor:
 * Used BLE protocol for Connectivity with the nRF Connect Mobile Application.
-
-## Schematic
-![Untitled Sketch 2_bb](https://github.com/Nirvan007/ESP32_BLE/assets/127144315/321e2724-a62f-460c-bd77-e2680af8002b)
-
-## Complete Hardware Assembly
-![IMG_20240711_034424029](https://github.com/Nirvan007/ESP32_BLE/assets/127144315/3f9e5228-5c99-4f26-be10-5f659cd05d99)
-![IMG_20240711_034431219](https://github.com/Nirvan007/ESP32_BLE/assets/127144315/186f0934-2f9e-417e-a4ab-6e76f5d279ac)
+* Used Wi-Fi protocol to connect the microcontroller to the WLAN Network:
 
 ## Firmware
 ### Link (Check the link below or directly download the .ino file or Word document that has the raw code)
-- https://github.com/Nirvan007/ESP32_BLE/blob/main/Firmware/Nineti_Assignment_ESP32_BLE/Nineti_Assignment_ESP32_BLE.ino
-
-## Project Overview Video
-### Link
-- https://drive.google.com/file/d/1l5og78Y-2ZODacyJ4YPPP19z49ZOXAzD/view?usp=sharing
+- 
 
 ## Issues Faced and Resolution
-### ESP32 Not Advertising after disconnection
-### Approach 1: Used the callback function to restart advertising within the loop itself.
-* Result = Successfully connected and reconnected multiple times with no issues (Check at the end of the [Project Overview Video](#Project-Overview-Video)).
+### Space problem in the ESP32 Devkit V1 Board
+![Screenshot_1](https://github.com/user-attachments/assets/bcd0a14f-14e9-4dd7-8fc5-0aafd63c3f00)
 
-### BLE Data transmission problem
-### Approach 1: Started with using custom characteristic UUIDs and tried to send the data as String values (I had worked on this before).
-* Result = Successfully received both values Temperature Measurement & Humidity in Strings.
-* Comment = This was not asked in the task. It was mandatory to use the default GATT UUIDs.
-![Screenshot_20240709-181209](https://github.com/Nirvan007/ESP32_BLE/assets/127144315/f7b39095-ee23-4b6a-a411-83da69e248e8)
+### Approach 1: Changed the board type to ESP32 Dev Module (As both could be used for uploading the code, i.e., they have the same ESP32-WROOM Chip)
+* Result = Same error.
+* Comment = There was the same amount of space in both development boards (Same program and flash memory).
+![Screenshot_8](https://github.com/user-attachments/assets/5fb3c90a-8aa4-493c-becc-6f24580831dc)
 
-### Approach 2: Set the UUIDs to the required UUIDs (Temperature Measurement = 0x2A1C; Humidity = 0x2A6F) and tried to send the data as String values.
-* Result = Error: Invalid Data Syntax @ nRF Application for Temperature Measurement value & Garbage value for Humidity value.
-* Comment = This was not asked in the task. Getting the Humidity in % and Temperature Measurement in Celsius was mandatory.
-![Screenshot_20240710-001504](https://github.com/Nirvan007/ESP32_BLE/assets/127144315/bcaded46-4741-448d-a486-981c6b312db2)
-
-### Approach 3: Changed the Temperature characteristic UUID to default temperature (Temperature = 0x2AE6) and tried to send the data as unsigned 16-bit int. 
-* Result = Successfully received both values Temperature Measurement & Humidity in unsigned 16-bit int values.
-* Comment = Checked the BLE documentation for the UUIDs (Temperature = 0x2AE6; Humidity = 0x2A6F) and their required data syntax type required.
-![Screenshot_20240709-200443](https://github.com/Nirvan007/ESP32_BLE/assets/127144315/b02fc88f-02a1-4c9d-9f13-209e9dd9ec41)
-
-### Approach 4: Reset the Temperature characteristic UUID (Temperature Measurement = 0x2A1C) and tried to send the data as unsigned 16-bit int. 
-* Result = Error: Invalid Data Syntax @ nRF Application for Temperature Measurement value, but successfully received values for Humidity in unsigned 16-bit int values.
-* Comment = Checked the BLE documentation for the Temperature Measurement UUID (Temperature Measurement = 0x2A1C) and their required data syntax type required.
-![Screenshot_20240709-204813](https://github.com/Nirvan007/ESP32_BLE/assets/127144315/7d2f5718-a76a-4721-b9be-b9850d86d69d)
-
-### Approach 5: Tried to convert the temperature data to 32-bit float and send the data along with the humidity data as unsigned 16-bit int. 
-* Result = Successfully received both values Temperature Measurement & Humidity in unsigned 16-bit int values, but Temperature Measurement unit was in Fahrenheit scale.
-* Comment = Checked the BLE documentation for the Temperature Measurement UUID (Temperature Measurement = 0x2A1C) and their required data syntax type required and flags.
-* Comment = Checked the conversion requires an IEEE11073 32-bit float data stream with 5 bytes (1 byte for C/F and 4 bytes for the actual value).
-
-### Approach 6: Changed the IEEE11073 32-bit float data stream with 5 bytes (1 byte for C/F and 4 bytes for the actual value) and set it to 0x00 flag for Celsius unit scale.
-* Result = Successfully received both values Temperature Measurement & Humidity values on the nRF Connect Application with correct unit scales.
-* Comment = Checked the BLE documentation for the Temperature Measurement UUID (Temperature Measurement = 0x2A1C) and their required data syntax type required and flags.
-![Screenshot_20240710-001846](https://github.com/Nirvan007/ESP32_BLE/assets/127144315/0b22935e-afef-471d-9152-78d379f40003)
+### Approach 2: Changed the board type to ESP32 Dev Module and switched the "Partition Scheme" setting in tools to "Huge APP (3MB No OTA/1MB SPIFFS)".
+* Result = This resolved the compilation error and uploaded properly onto the board successfully.
+* Comment = There is a lot of space available in the board memory, but has different default partitions preset which can be changed as per use case.
+![Screenshot_2](https://github.com/user-attachments/assets/99f7807d-d574-436b-8ba3-5fe99e3fbbba)
 
 ## Outputs
 ## Serial Monitor messages
-![Screenshot_2](https://github.com/Nirvan007/ESP32_BLE/assets/127144315/1b3069f8-4238-404f-ab51-b2a7502a59ef)
-![Screenshot_3](https://github.com/Nirvan007/ESP32_BLE/assets/127144315/bc76e729-1961-4b9a-b3f5-209d3fdaec1c)
-![Screenshot_4](https://github.com/Nirvan007/ESP32_BLE/assets/127144315/ef43aa4c-d27b-4dfd-8d17-5964937cada9)
-![Screenshot_5](https://github.com/Nirvan007/ESP32_BLE/assets/127144315/c49f85a7-982e-4904-aac3-c5bad0dc3ebd)
-![Screenshot_6](https://github.com/Nirvan007/ESP32_BLE/assets/127144315/bf7b4575-6db3-4121-b900-6389dc6dca00)
+![Screenshot_3](https://github.com/user-attachments/assets/9704d1b7-4945-41f2-ad96-a5dc8219da4d)
+![Screenshot_4](https://github.com/user-attachments/assets/514afd4b-771e-4b37-a7a3-6aecb7170fb2)
+![Screenshot_5](https://github.com/user-attachments/assets/55742ceb-1ef5-4c25-9ab6-dc1ffa9568d8)
+![Screenshot_6](https://github.com/user-attachments/assets/27c45227-bb99-4631-bc91-ba13568e4d3f)
 
 ## nRF Connect Application interface
-![Screenshot_20240710-001846](https://github.com/Nirvan007/ESP32_BLE/assets/127144315/66f06f8a-154c-4137-beaa-8b890b05ff05)
+### Connecting to the ESP32 Board
+![Screenshot_20240712-052603](https://github.com/user-attachments/assets/045dafbd-c4cf-4255-81c5-8026471fc126)
+
+### Opening the User-Created Unknown Service
+![Screenshot_20240712-052617](https://github.com/user-attachments/assets/33c132cd-11ad-414c-9892-418ca17a4e06)
+
+### Writing to the board by using the "Upward Arrow" in the characteristic which denotes the "Write" command
+![Screenshot_20240712-053455](https://github.com/user-attachments/assets/edffbb2c-25f0-4df2-9983-9532aa94e8f4)
+
+### Setting the "Write value" to "TEXT(UTF-8)" to send a String vlaue to the board
+![Screenshot_20240712-053503](https://github.com/user-attachments/assets/835e1f2f-3c01-407b-9990-abbf0a7d298e)
+
+### Type the Wi-Fi SSID and Password in the format: "SSID,PASS" and click send
+![Screenshot_20240712-053522](https://github.com/user-attachments/assets/0d3794d4-bfdd-46ac-a40d-6ccc9cf352cd)
+
+### Value is being written
+![Screenshot_20240712-053753](https://github.com/user-attachments/assets/c0c3e110-1d31-489f-a49a-dce1825b3957)
+
+### The device receives the SSID and Password, then it has to be reset, so that it can turn OFF the BLE and connect to the provided Wi-Fi SSID
+![Screenshot_20240712-053821](https://github.com/user-attachments/assets/7bf729da-eead-4465-93ca-91a656a5dd51)
+![Screenshot_20240712-053829](https://github.com/user-attachments/assets/8502e512-faf8-423d-a604-d31fb99ad1d4)
 
 ## References
- - [1] https://github.com/nkolban/ESP32_BLE_Arduino
- - [2] https://github.com/RuiSantosdotme
- - [3] https://randomnerdtutorials.com/esp32-ble-server-environmental-sensing-service/
- - [4] https://github.com/makerhero/esp32-ble-dht11
- - [5] https://github.com/atc1441/ATC_MiThermometer/issues/150
- - [6] https://stackoverflow.com/questions/28899195/converting-two-bytes-to-an-ieee-11073-16-bit-sfloat-in-c-sharp/28901867#28901867
- - [7] https://stackoverflow.com/questions/60841331/dart-convert-ieee-11073-32-bit-float-to-a-simple-double/71732994#71732994
- - [8] https://docs.bosch-iot-suite.com/edge/edge-services/API/modules/com.prosyst.mbs.bluetooth.le.driver.api/allclasses-noframe.html
- - [9] https://github.com/oesmith/gatt-xml/blob/master/org.bluetooth.characteristic.temperature_measurement.xml
+ - [1] https://randomnerdtutorials.com/esp32-wi-fi-provisioning-ble-arduino/#:~:text=You%20connect%20to%20the%20ESP32,Fi%2Drelated%20tasks%20it%20needs
+ - [2] https://github.com/mironal/iOS-Bluetooth-ESP32-WiFi/blob/master/Arduino/BLE_WiFi_ESP32.ino
+ - [3] https://github.com/EspressifApp/EspBlufiForAndroid/releases
+ - [4] https://github.com/0015/ThatProject/tree/master/Esp32_wifi_ssid_pw_via_ble/Esp32_WIFI_BLE
+ - [5] https://arduino.stackexchange.com/questions/90925/text-section-exceeds-available-space-in-board
+ - [6] https://esp32.com/viewtopic.php?t=5292
