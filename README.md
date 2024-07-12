@@ -31,7 +31,7 @@ Arduino Integrated Development Environment or Arduino Software (IDE) contains a 
 
 ## Firmware
 ### Link (Check the link below or directly download the .ino file or Word document that has the raw code)
-- 
+- https://github.com/Nirvan007/ESP32_WIFI_CREDS_OVER_BLE/blob/main/Firmware/Nineti_Assignment_BLE_WiFi_Creds/Nineti_Assignment_BLE_WiFi_Creds.ino
 
 ## Issues Faced and Resolution
 ### Space problem in the ESP32 Devkit V1 Board
